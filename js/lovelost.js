@@ -136,7 +136,7 @@
 
   /** Run the end game state */
   function gameOver() {
-    alert('It is better to have loved and lost than never to have loved at all...');
+    alert('\'Tis better to have loved and lost, Than never to have loved at all');
     document.location.reload();
   }
 
