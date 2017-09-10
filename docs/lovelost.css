@@ -1,0 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: #22A9D5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  box-shadow: inset 0px 0px 0px 9px #ffffff;
+  -webkit-transition: background-color 1s linear;
+  -ms-transition: background-color 1s linear;
+  transition: background-color 1s linear;
+}
+canvas {
+  background-color: #eeeeee;
+  display: block;
+}
