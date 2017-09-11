@@ -12,7 +12,23 @@
   relationshipStarted = false,
   connected = false,
   partnerMoveSpeed = 1.25,
-  playerMoveSpeed = 1;
+  playerMoveSpeed = 1,
+  partnerRunSpeed = .05;
+
+  var OVERLAP_COLOR = '#E8543D', //232,84,61
+      PLAYER_COLOR = '#22A9D5',
+      PARTNER_COLOR = '#DBD56E',
+      CURRENT_BACKGROUND = {
+        red: 0,
+        green: 149,
+        blue: 221
+      },
+      GOAL_BACKGROUND = {
+        red: 0,
+        green: 149,
+        blue: 221
+      }
+      GAME_OVER_COLOR = '#111111';
 
   var diffX = Math.abs(playerX - partnerX);
   var diffY = Math.abs(playerY - partnerY);
@@ -26,17 +42,19 @@
         connected = false;
 
         if (partnerX < canvas.width / 2 && partnerX > 0) {
-          partnerX -= 1;
+          partnerX -= partnerRunSpeed;
         } else if (partnerX >= canvas.width / 2 && partnerX < canvas.width - playerSize) {
-          partnerX += 1;
+          partnerX += partnerRunSpeed;
         }
 
         if (partnerY < canvas.height / 2 && partnerY > 0) {
-          partnerY -=1;
+          partnerY -= partnerRunSpeed;
         } else if (partnerY >= canvas.height / 2 && partnerY < canvas.height - playerSize) {
-          partnerY +=1;
+          partnerY += partnerRunSpeed;
         }
-      }, 500);
+
+        if (partnerRunSpeed < 1) { partnerRunSpeed += .01; }
+      }, 1500);
     }
   }
 
@@ -94,8 +112,13 @@
 
     if (overlapX > 4 && overlapY > 4) {
       connected = true;
+      partnerRunSpeed = 0.05;
       relationshipStarted = true;
-      document.body.style.backgroundColor = '#E8543D';
+      GOAL_BACKGROUND = {
+        red: 232,
+        green: 84,
+        blue: 61
+      }
     } else {
       connected = false;
     }
@@ -104,46 +127,51 @@
   function gameDebugger() {
     console.log('gameDebugger is ON!');
     ctx.font = '12px Arial';
-    ctx.fillStyle = '#FE5F55';
+    ctx.fillStyle = OVERLAP_COLOR;
     ctx.fillText('Connected ' + connected, 20, 20);
     ctx.fillText('Player: X ' + playerX + ' Y ' + playerY, 20, 32);
     ctx.fillText('Partner: X ' + partnerX + ' Y ' + partnerY, 20, 44);
     ctx.fillText('diffX ' + diffX, 20, 56);
     ctx.fillText('diffY ' + diffY, 20, 68);
+    ctx.fillText('BG_RED ' + CURRENT_BACKGROUND.red, 20, 80);
+    ctx.fillText('BG_GREEN ' + CURRENT_BACKGROUND.green, 20, 92);
+    ctx.fillText('BG_BLUE ' + CURRENT_BACKGROUND.blue, 20, 104);
   }
 
   /** Run the end game state */
   function gameOver() {
     clearCanvas();
-    // fadeOutCanvas(238, 238, 238);
     drawEndText();
   }
 
-  function fadeOutCanvas(r,g,b) {
-    var steps = 50, dr = (17 - r) / steps, dg = (17 - g) / steps, db = (17 - b) / steps, i = 0,
-        interval = setInterval(function() {
-          color = 'rgb(' + Math.round(r + dr * i) + ',' + Math.round(g + dg * i) + ',' + Math.round(b + db * i) + ')';
+  function setBackgroundColor() {
+    document.body.style.backgroundColor = 'rgb(' + CURRENT_BACKGROUND.red + ',' + CURRENT_BACKGROUND.green + ',' + CURRENT_BACKGROUND.blue + ')';
+  }
 
-          document.getElementById('myCanvas').style.backgroundColor = color;
+  function fadeBackgroundColor() {
+    var steps = 50,
+        dr = (CURRENT_BACKGROUND.red - GOAL_BACKGROUND.red) / steps,
+        dg = (CURRENT_BACKGROUND.green - GOAL_BACKGROUND.green) / steps,
+        db = (CURRENT_BACKGROUND.blue - GOAL_BACKGROUND.blue) / steps,
+        i = 0;
 
-          i++;
+    CURRENT_BACKGROUND.red = Math.round(GOAL_BACKGROUND.red + dr * i);
+    CURRENT_BACKGROUND.green = Math.round(GOAL_BACKGROUND.green + dg * i);
+    CURRENT_BACKGROUND.blue = Math.round(GOAL_BACKGROUND.blue + db * i);
 
-          if (i === steps) {
-            clearInterval(interval);
-          }
-        }, 30);
+    setBackgroundColor();
   }
 
   function drawEndText() {
     ctx.font = '16px Arial';
-    ctx.fillStyle = '#0095DD';
+    ctx.fillStyle = PARTNER_COLOR;
     ctx.fillText('\'Tis better to have loved and lost, Than never to have loved at all', 20, canvas.height / 2);
   }
 
   function drawPlayer() {
     ctx.beginPath();
     ctx.rect(playerX, playerY, playerSize, playerSize);
-    ctx.fillStyle = '#22A9D5';
+    ctx.fillStyle = PLAYER_COLOR;
     ctx.fill();
     ctx.closePath();
   }
@@ -151,7 +179,7 @@
   function drawPartner() {
     ctx.beginPath();
     ctx.rect(partnerX, partnerY, playerSize, playerSize);
-    ctx.fillStyle = '#DBD56E';
+    ctx.fillStyle = PARTNER_COLOR;
     ctx.fill();
     ctx.closePath();
   }
@@ -159,7 +187,7 @@
   function drawOverlap(x, y, w, h) {
     ctx.beginPath();
     ctx.rect(x, y, w, h);
-    ctx.fillStyle = '#E8543D';
+    ctx.fillStyle = OVERLAP_COLOR;
     ctx.fill();
     ctx.closePath();
   }
@@ -172,10 +200,11 @@
     clearCanvas();
     drawPlayer();
     drawPartner();
-    // gameDebugger();
+    gameDebugger();
     partnerCollisionDetection();
     canvasCollisionDetection();
     movePartner();
+    fadeBackgroundColor();
     requestAnimationFrame(draw);
   }
 
