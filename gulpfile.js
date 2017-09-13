@@ -47,7 +47,7 @@ gulp.task('build_source', function() {
   return bundler
     .bundle()
     .on('error', browserifyError)
-    .pipe(source('lovelost.js'))
+    .pipe(source('blend-game.js'))
     .pipe(buffer())
     .pipe(gulpif(prod, uglify()))
     .pipe(gulp.dest('docs'));
@@ -66,7 +66,7 @@ gulp.task('build_index', function() {
 gulp.task('build_styles', function() {
   return gulp.src('src/styles.less')
     .pipe(less())
-    .pipe(concat('lovelost.css'))
+    .pipe(concat('blend-game.css'))
     .pipe(gulpif(prod, cssmin()))
     .pipe(gulp.dest('docs'));
 });
