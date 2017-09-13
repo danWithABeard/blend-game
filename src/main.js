@@ -10,7 +10,7 @@
       playerY = 10,
       relationshipStarted = false,
       connected = false,
-      partnerRunSpeed = .05,
+      partnerRunSpeed = 0.05,
       relationshipTimeline = 0;
       finalBreakUpText = null,
       diffX = Math.abs(playerX - partnerX),
@@ -37,7 +37,7 @@
   ];
 
   /** Keyboard Event Listeners for WASD, ZQSD, or ARROW keys. Thanks, Subzey! https://xem.github.io/articles/#jsgamesinputs*/
-  u=d=l=r=0;onkeydown=onkeyup=e=>top['lurdl*d*l*ur*u'[(e.which+3)%20]]=e.type[3]<'u'
+  u=d=l=r=0;onkeydown=onkeyup=function(e){return top['lurdl*d*l*ur*u'[(e.which+3)%20]]=e.type[3]<'u'};
 
   function movePartner() {
     if (relationshipStarted && !r && !l && !u && !d ) {
@@ -57,7 +57,9 @@
           partnerY += partnerRunSpeed;
         }
 
-        if (partnerRunSpeed < 1) { partnerRunSpeed += .01; }
+        if (partnerRunSpeed < 1) {
+          partnerRunSpeed += 0.01;
+        }
       }, 1500);
     }
   }

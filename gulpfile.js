@@ -73,7 +73,7 @@ gulp.task('build_styles', function() {
 
 gulp.task('clean', function() {
   rimraf.sync('build');
-  rimraf.sync('dist');
+  rimraf.sync('docs');
 });
 
 gulp.task('lint', function() {
@@ -93,7 +93,7 @@ gulp.task('dist', ['build'], function() {
     .pipe(zip('archive.zip'))
     .pipe(size())
     .pipe(micro({limit: 13 * 1024}))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('docs'));
 });
 
 gulp.task('watch', function() {
